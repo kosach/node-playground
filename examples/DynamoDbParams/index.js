@@ -1,7 +1,11 @@
 const _params = {};
+const methodDependency = {
+  AttributesToGet: ['get', 'scan', 'query', 'batchGet']
+}
 class Parameters{
-  constructor(table){
+  constructor(table, method){
     if(!table) throw 'Table property is required';
+    if (!method) throw 'Method property is required';
     Object.assign(_params, {TableName: table,} );
   }
   get params(){
@@ -10,10 +14,18 @@ class Parameters{
   set params (param){
     console.log('You can not set this property');
   }
+  set select(params){
+    if (params && Array.isArray(params)) {
+      Object.assign(_params, {
+        AttributesToGet: params,
+      });
+    } else console.error('Select params is requred and it mast be array');
+  }
 }
 
-const test = new Parameters('table');
+const test = new Parameters('table','get');
 
+test.select = ['asdasd'];
 console.log(test.params);
 
 // var params = {
