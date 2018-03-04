@@ -1,4 +1,6 @@
 //TODO plan:
+//*Add between method
+//Get API method
 // *ProjectionExpression
 // *ConsistentRead
 // *ReturnConsumedCapacity
@@ -24,10 +26,29 @@ class Parameters{
     if(!TableName) throw 'Table property is required';
     if (!Method) throw 'Method property is required';
     Object.assign(_params, { TableName, } );
-    if(Key) Object.assign( _params, { Key } );
-    this.method = Method;
+    //this parameter will be used for result validation
+    this.method = undefined;
   }
-
+  /** @method
+  * @name get
+  *
+  * @param {(string|integer)} Key - Set method and required parameters for Get API method
+  * */
+  get(Key){
+    if(!Key) return console.log('Key is required field');
+    this.method = 'get';
+    Object.assign( _params, { Key } )
+    return this;
+  }
+  /** @method
+  * @name query
+  *
+  *  Set method and required parameters for Query API method
+  * */
+  query(){
+    this.method = 'query';
+    return this;
+  }
   /** @method
   * @name select
   * 
@@ -56,6 +77,7 @@ class Parameters{
   * @param {eny} value - Field value
   * */
   where(field, operator, value){
+    //TODO Add logical operators AND or OR
     if(typeof field !== 'string'
       || !operators.includes(operator)
       || !value ) return console.log('Wrong parameters');
@@ -65,6 +87,7 @@ class Parameters{
     return this;
   }
   getQuery(){
+    if(!this.method) return console.log('You must used one from methods ( get(), query() ) before getting query string');
     if(this.method === 'get'){
       if(!_params.Key){
         return console.log('Key is required!');
@@ -79,7 +102,8 @@ class Parameters{
 
 const test = new Parameters('worldview_services','query');
 const query = test
-        .where('test1[0]', '=', 'test111')
+        // .where('test1[0]', '=', 'test111')
+        .query('Key')
         .where('HCservice', '=', 'datadog')
         .getQuery();
 console.log(query);
