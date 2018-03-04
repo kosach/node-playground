@@ -1,12 +1,23 @@
 //TODO plan:
 // *ProjectionExpression
-// *ExpressionAttributeNames
 // *ConsistentRead
 // *ReturnConsumedCapacity
 
+const { operators } = require('./parameters');
+const { truncateFieldName } =  require('./services');
+const { ExpressionAttributeNames,
+        ExpressionAttributeValues,
+        FilterExpression, } =  require('./helpers');
 const _params = {};
 const methodDependency = {
   AttributesToGet: ['get', 'scan', 'query', 'batchGet']
+}
+const clearParams = (filterParams) =>{
+  const newObj = Object.assign({}, filterParams);
+  for(key in newObj){
+    if (Object.keys(newObj[key]).length == 0) delete newObj[key];
+  }
+  return newObj;
 }
 class Parameters{
   constructor(TableName, Method, Key){
@@ -16,11 +27,11 @@ class Parameters{
     if(Key) Object.assign( _params, { Key } );
     this.method = Method;
   }
+
   /** @method
   * @name select
   * 
   * @param {(string|string[])} params - Some select param or array of select params
-  *  
   * */
   select(params){
     //TODO add array elements validation
@@ -37,6 +48,22 @@ class Parameters{
     return this;
   }
 
+  /** @method
+  * @name where
+  *
+  * @param {string} field - Name of the field
+  * @param {string} operator - One of operators '=','<','<=','>','>='
+  * @param {eny} value - Field value
+  * */
+  where(field, operator, value){
+    if(typeof field !== 'string'
+      || !operators.includes(operator)
+      || !value ) return console.log('Wrong parameters');
+    ExpressionAttributeNames(_params, field);
+    ExpressionAttributeValues(_params, field, value)
+    FilterExpression(_params, operator, field);
+    return this;
+  }
   getQuery(){
     if(this.method === 'get'){
       if(!_params.Key){
@@ -47,28 +74,14 @@ class Parameters{
   }
 }
 
-const test = new Parameters('table','get', 'alkjdlajsdlkj');
-const query = test.select(['test']).select('2').getQuery();
+
+//Test example
+
+const test = new Parameters('worldview_services','query');
+const query = test
+        .where('test1[0]', '=', 'test111')
+        .where('HCservice', '=', 'datadog')
+        .getQuery();
 console.log(query);
 
 
-
-// var params = {
-//   Key: { /* required */
-//     '<AttributeName>': someValue /* "str" | 10 | true | false | null | [1, "a"] | {a: "b"} */ ,
-//     /* '<AttributeName>': ... */
-//   },
-//   TableName: 'STRING_VALUE',
-//   /* required */
-//   AttributesToGet: [
-//     'STRING_VALUE',
-//     /* more items */
-//   ],
-//   ConsistentRead: true || false,
-//   ExpressionAttributeNames: {
-//     '<ExpressionAttributeNameVariable>': 'STRING_VALUE',
-//     /* '<ExpressionAttributeNameVariable>': ... */
-//   },
-//   ProjectionExpression: 'STRING_VALUE',
-//   ReturnConsumedCapacity: INDEXES | TOTAL | NONE
-// };
