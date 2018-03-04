@@ -8,25 +8,36 @@ class Parameters{
     if (!method) throw 'Method property is required';
     Object.assign(_params, {TableName: table,} );
   }
-  get params(){
+  /** @method
+  * @name select
+  * 
+  * @param {(string|string[])} params - Some select param or array of select params
+  *  
+  * */
+  select(params){
+    //TODO add array elements validation
+    if (typeof params === 'string' || Array.isArray(params)) {
+      if(_params.AttributesToGet) {
+        console.log('concat', params);
+        _params.AttributesToGet = _params.AttributesToGet.concat(params)
+      }else{
+        Object.assign(_params, {
+          AttributesToGet: params,
+        });
+      }
+    } else console.error(`Wrong params - ${params}. It's required and it's must be array or string`);
+    return this;
+  }
+  getQuery(){
     return _params;
-  }
-  set params (param){
-    console.log('You can not set this property');
-  }
-  set select(params){
-    if (params && Array.isArray(params)) {
-      Object.assign(_params, {
-        AttributesToGet: params,
-      });
-    } else console.error('Select params is requred and it mast be array');
   }
 }
 
 const test = new Parameters('table','get');
-
-test.select = ['asdasd'];
-console.log(test.params);
+const query = test.select(['test']).select(2).getQuery();
+console.log(query);
+// test.select = ['asdasd'];
+// console.log(test.params);
 
 // var params = {
 //   Key: { /* required */
