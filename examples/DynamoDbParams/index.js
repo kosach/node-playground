@@ -5,6 +5,9 @@
 // *ConsistentRead
 // *ReturnConsumedCapacity
 
+
+//TODO create catch method for all errors;
+
 const { operators } = require('./parameters');
 const { truncateFieldName } =  require('./services');
 const { ExpressionAttributeNames,
@@ -49,6 +52,7 @@ class Parameters{
     this.method = 'query';
     return this;
   }
+
   /** @method
   * @name select
   * 
@@ -84,6 +88,17 @@ class Parameters{
     ExpressionAttributeNames(_params, field);
     ExpressionAttributeValues(_params, field, value)
     FilterExpression(_params, operator, field);
+    return this;
+  }
+
+  /** @method
+  * @name between
+  *
+  * @param {string} param1 - Start of selection 
+  * @param {string} param2 - End of selection
+  * */
+  between(param1, param2){
+    if(!param1 && param2) return console.log('Wrong parameters');
     return this;
   }
   getQuery(){
