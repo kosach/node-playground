@@ -3,10 +3,12 @@ const methodDependency = {
   AttributesToGet: ['get', 'scan', 'query', 'batchGet']
 }
 class Parameters{
-  constructor(table, method){
-    if(!table) throw 'Table property is required';
-    if (!method) throw 'Method property is required';
-    Object.assign(_params, {TableName: table,} );
+  constructor(TableName, Method, Key){
+    if(!TableName) throw 'Table property is required';
+    if (!Method) throw 'Method property is required';
+    Object.assign(_params, { TableName, } );
+    if(Key) Object.assign( _params, { Key } );
+    this.method = Method;
   }
   /** @method
   * @name select
@@ -28,13 +30,19 @@ class Parameters{
     } else console.error(`Wrong params - ${params}. It's required and it's must be array or string`);
     return this;
   }
+  
   getQuery(){
+    if(this.method === 'get'){
+      if(!_params.Key){
+        return console.log('Key is required!');
+      }
+    }
     return _params;
   }
 }
 
-const test = new Parameters('table','get');
-const query = test.select(['test']).select(2).getQuery();
+const test = new Parameters('table','get', 'alkjdlajsdlkj');
+const query = test.select(['test']).select('2').getQuery();
 console.log(query);
 // test.select = ['asdasd'];
 // console.log(test.params);
