@@ -1,3 +1,9 @@
+//TODO plan:
+// *ProjectionExpression
+// *ExpressionAttributeNames
+// *ConsistentRead
+// *ReturnConsumedCapacity
+
 const _params = {};
 const methodDependency = {
   AttributesToGet: ['get', 'scan', 'query', 'batchGet']
@@ -30,7 +36,7 @@ class Parameters{
     } else console.error(`Wrong params - ${params}. It's required and it's must be array or string`);
     return this;
   }
-  
+
   getQuery(){
     if(this.method === 'get'){
       if(!_params.Key){
@@ -44,8 +50,8 @@ class Parameters{
 const test = new Parameters('table','get', 'alkjdlajsdlkj');
 const query = test.select(['test']).select('2').getQuery();
 console.log(query);
-// test.select = ['asdasd'];
-// console.log(test.params);
+
+
 
 // var params = {
 //   Key: { /* required */
@@ -66,7 +72,3 @@ console.log(query);
 //   ProjectionExpression: 'STRING_VALUE',
 //   ReturnConsumedCapacity: INDEXES | TOTAL | NONE
 // };
-// documentclient.get(params, function (err, data) {
-//   if (err) console.log(err, err.stack); // an error occurred
-//   else console.log(data); // successful response
-// });
