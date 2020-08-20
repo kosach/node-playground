@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "async": "^2.6.0",
-    "bcrypt": "^1.0.3",
+    "bcrypt": "^5.0.0",
     "level": "^2.1.1",
     "level-sublevel": "^6.6.1",
     "node-uuid": "^1.4.8"
